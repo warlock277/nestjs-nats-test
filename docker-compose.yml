@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  master:
+    build: ./master
+    container_name: nestjs-nats-test-master
+    image: nestjs-nats-test-master
+    environment:
+      NATS_URL: nats://nestjs-nats:4222
+    ports:
+      - "3333:3333"
+    command: bash -c "npm run start:dev"
+    volumes:
+      - ./src:/app/src
+
+  minion:
+    build: ./minion
+    container_name: nestjs-nats-test-minion
+    image: nestjs-nats-test-minion
+    environment:
+      NATS_URL: nats://nestjs-nats:4222
+    command: bash -c "npm run start:dev"
+    volumes:
+      - ./src:/app/src
+
+  nats:
+    container_name: nestjs-nats
+    image: nats
+    command: -c nats-server.conf -DV
+    ports:
+      - "8222:8222"
+      - "4222:4222"
+      - "6222:6222"
